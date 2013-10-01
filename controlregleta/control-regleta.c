@@ -99,6 +99,7 @@ int main(int argc, char **argv)
     char            *sername = DEFAULT_SERDEVICE,token;
     char extra,relay,mode;
     char time_msg[10];
+    time_t sec;
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
@@ -186,6 +187,20 @@ int main(int argc, char **argv)
         	if(c==SHOW_SATUS_HEADER){
         		write(fd, status_str, strlen(status_str));
         	}
+            //sync time request
+            if(c==TIME_REQUEST){
+                sec = time(NULL);
+                sec= sec + (60*60*TZ_ADJUST);
+                (void)sprintf(time_msg,"%ld",sec);
+            	token = (char)TIME_HEADER;
+            	extra = (char)COMPLETE_CHAR;
+            	write(fd,&token,1);
+            	write(fd, time_msg, strlen(time_msg));
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+                continue;
+            }
             if(c==RELAY_HEADER){
             	token = (char)RELAY_HEADER;
             	mode=getchar();
@@ -227,10 +242,7 @@ int main(int argc, char **argv)
         sa.sa_handler = child_handler;
         sa.sa_flags = 0;
         sigaction(SIGCHLD,&sa,NULL); /* handle dying child */
-        time_t sec;
-        sec = time(NULL);
-        sec= sec + (60*60*TZ_ADJUST);
-        (void)sprintf(time_msg,"%ld",sec);
+
         while ( !stop )
         {
             read(fd,&c,1); /* modem */
@@ -238,6 +250,9 @@ int main(int argc, char **argv)
 
             //sync time request
             if(c==TIME_REQUEST){
+                sec = time(NULL);
+                sec= sec + (60*60*TZ_ADJUST);
+                (void)sprintf(time_msg,"%ld",sec);
             	token = (char)TIME_HEADER;
             	extra = (char)COMPLETE_CHAR;
             	write(fd,&token,1);
@@ -262,3 +277,4 @@ int main(int argc, char **argv)
     printf("Default device: %s\n", DEFAULT_SERDEVICE);
     return 1;
 }
+
