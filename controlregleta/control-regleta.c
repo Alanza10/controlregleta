@@ -50,6 +50,8 @@
 #define RELAY_COUNT 4
 #define TIME_REQUEST  '\a' //7 ASCII code BELL in C
 #define COMPLETE_CHAR 'X'
+#define TZ_ADJUST +2
+
 
 #define DEFAULT_BAUDRATE   115200
 #define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
@@ -220,6 +222,7 @@ int main(int argc, char **argv)
         sigaction(SIGCHLD,&sa,NULL); /* handle dying child */
         time_t sec;
         sec = time(NULL);
+        sec= sec + (60*60*TZ_ADJUST);
         (void)sprintf(time_msg,"%ld",sec);
         while ( !stop )
         {
