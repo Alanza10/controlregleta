@@ -1,4 +1,4 @@
 #!/bin/bash
 source /etc/controlregleta.cfg
-sh /home/pi/cs/controlregleta/commands/releon.sh $tty $relay1
+sh /home/pi/cs/controlregleta/commands/programar.sh $tty $relay1 $prog1
 	
