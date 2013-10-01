@@ -188,7 +188,7 @@ int main(int argc, char **argv)
         		write(fd, status_str, strlen(status_str));
         	}
             //sync time request
-            if(c==TIME_REQUEST){
+            if(c==TIME_HEADER){
                 sec = time(NULL);
                 sec= sec + (60*60*TZ_ADJUST);
                 (void)sprintf(time_msg,"%ld",sec);
