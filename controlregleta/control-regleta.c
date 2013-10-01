@@ -51,7 +51,10 @@
 #define TIME_REQUEST  '\a' //7 ASCII code BELL in C
 #define COMPLETE_CHAR 'X'
 #define TZ_ADJUST +2
-
+#define RELAY_1 '1'
+#define RELAY_2 '2'
+#define RELAY_3 '3'
+#define RELAY_4 '4'
 
 #define DEFAULT_BAUDRATE   115200
 #define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
@@ -94,7 +97,7 @@ int main(int argc, char **argv)
 {
     int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE);
     char            *sername = DEFAULT_SERDEVICE,token;
-    char extra,relay;
+    char extra,relay,mode;
     char time_msg[10];
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
     struct sigaction sa;
@@ -185,23 +188,27 @@ int main(int argc, char **argv)
         	}
             if(c==RELAY_HEADER){
             	token = (char)RELAY_HEADER;
-            	extra = (char)RELAY_ON;
-            	relay = '1';
-            	write(fd,&token,1);
-            	write(fd,&extra,1);
-            	write(fd,&relay, 1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-            	write(fd,&extra,1);
-                continue;
+            	mode=getchar();
+            	relay=getchar();
+            	if(mode == RELAY_ON || mode == RELAY_OFF){
+					if(relay==RELAY_1 || relay==RELAY_2 || relay==RELAY_3 || relay==RELAY_4 ){
+						extra = (char)COMPLETE_CHAR;
+						write(fd,&token,1);
+						write(fd,&mode,1);
+						write(fd,&relay, 1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+						write(fd,&extra,1);
+					 }
+					}
             }
         }
         tcsetattr(fd,TCSANOW,&oldsertio);
