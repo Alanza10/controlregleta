@@ -14,7 +14,7 @@
 case "$1" in
   start)
     echo "Iniciando control regleta "
-    tmux new-session  -n controlregleta -s controlregleta "controlregleta -b57600 -d/dev/ttyUSB0"\; detach
+    tmux new-session  -n controlregleta -s controlregleta "controlregleta -b57600 -d$2"\; detach
     ;;
   stop)
     echo "Parando control regleta"
