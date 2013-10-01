@@ -10,19 +10,15 @@
  */
 
 /*
- *  AUTHOR: Sven Goldt (goldt@math.tu-berlin.de)
- *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- */
+*Autor Angel Lanza a.lanza10@gmail.com
+*Consola para control regleta 4 relay
+*? para ayuda salir CRTL+]
+*Comandos soportados (14 chars):
+*Status SXXXXXXXXXXXXXX
+*Rele R[E,A][1-4]XXXXXXXXXXX
+*Sync horas T
+*Responde a caracter BELL para sync hora
+*/
 
 
 #include <termios.h>
@@ -55,6 +51,7 @@
 #define RELAY_2 '2'
 #define RELAY_3 '3'
 #define RELAY_4 '4'
+#define HELP '?'
 
 #define DEFAULT_BAUDRATE   115200
 #define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
@@ -104,9 +101,11 @@ int main(int argc, char **argv)
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
     static char start_str[] =
-        "************ REMOTE CONSOLE: CTRL-] TO QUIT ********\r\n";
+        "************ CONSOLA REGLETA: AYUDA ? | CTRL-] SALIR ********\r\n";
     static char end_str[] =
-        "\n************ REMOTE CONSOLE EXITED *****************\n";
+        "\n************ SALIR DE CONSOLA *****************\n";
+    static char help_str[] =
+        "Comandos: S (status) R[E,A][1-4] (reles) T (sync time)\r\n";
 
     while ( --argc != 0 )
     {
@@ -181,12 +180,16 @@ int main(int argc, char **argv)
     switch ( fork() )
     {
     case 0:
-        close(1); /* stdout not needed */
+        //close(1); /* stdout not needed */
         for (c=getchar(); c!= ENDMINITERM ; c=getchar()){
         	// write(fd,&c,1); no echo chars to modem
         	if(c==SHOW_SATUS_HEADER){
         		write(fd, status_str, strlen(status_str));
         	}
+            //help
+            if(c==HELP ){
+            	write(1, help_str, strlen(help_str)); /* stdout */
+            }
             //sync time request
             if(c==TIME_HEADER){
                 sec = time(NULL);
