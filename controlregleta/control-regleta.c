@@ -34,6 +34,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
+//nuevas mias
+#include <time.h>
 
 //para control regleta y protocolo
 #define MSG_LEN  14
@@ -47,7 +49,8 @@
 #define RELAY_OFF  'A'
 #define DURATION 'D'
 #define RELAY_COUNT 4
-#define TIME_REQUEST  0x0B //7 ASCII code BELL
+#define TIME_REQUEST  '\a' //7 ASCII code BELL in C
+#define COMPLETE_CHAR 'X'
 
 #define DEFAULT_BAUDRATE   115200
 #define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
@@ -89,9 +92,13 @@ int cook_baud(int baud)
 int main(int argc, char **argv)
 {
     int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE);
-    char            *sername = DEFAULT_SERDEVICE;
+    char            *sername = DEFAULT_SERDEVICE,token;
+    char extra;
+    char time_msg[10];
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
     struct sigaction sa;
+    static char status_str[] = "S1111111111111";
+  //  static char status_str[] = "S1111111111111";
     static char start_str[] =
         "************ REMOTE CONSOLE: CTRL-] TO QUIT ********\r\n";
     static char end_str[] =
@@ -171,10 +178,10 @@ int main(int argc, char **argv)
     {
     case 0:
         close(1); /* stdout not needed */
-        for ( c = (char)getchar(); c != ENDMINITERM; c = (char)getchar() ){
-            write(fd,&c,1);
-            //if(c==TIME_REQUEST)
-            	//write(fd,&c,1);
+        for (c=getchar(); c!= ENDMINITERM ; c=getchar()){// write(fd,&c,1);
+        	if(c==SHOW_SATUS_HEADER){
+        		write(fd, status_str, strlen(status_str));
+        	}
         }
         tcsetattr(fd,TCSANOW,&oldsertio);
         tcsetattr(0,TCSANOW,&oldstdtio);
@@ -192,10 +199,23 @@ int main(int argc, char **argv)
         sa.sa_handler = child_handler;
         sa.sa_flags = 0;
         sigaction(SIGCHLD,&sa,NULL); /* handle dying child */
+        time_t sec;
+        sec = time(NULL);
+        (void)sprintf(time_msg,"%ld",sec);
         while ( !stop )
         {
             read(fd,&c,1); /* modem */
             c = (char)c;
+            if(c==TIME_REQUEST){
+            	token = (char)TIME_HEADER;
+            	extra = (char)COMPLETE_CHAR;
+            	write(fd,&token,1);
+            	write(fd, time_msg, strlen(time_msg));
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+                continue;
+            }
             write(1,&c,1); /* stdout */
         }
         wait(NULL); /* wait for child to die or it will become a zombie */
