@@ -230,6 +230,9 @@ int main(int argc, char **argv)
 					 }
 					}
             }
+            if(c=='B'){
+            system ("sh /home/gelo/git/controlregleta/controlregleta/commands/regletabackup.sh");
+            }
             if(c==PROG_HEADER){
             	token= (char)PROG_HEADER;
             	relay=getchar();
