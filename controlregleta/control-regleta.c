@@ -34,10 +34,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
-//nuevas mias
 #include <time.h>
 
-//para control regleta y protocolo
+//control & protocol
 #define MSG_LEN  14
 #define RELAY_MSG_LEN 3
 #define RELAY_MSG_LEN_TIMED  5
@@ -93,12 +92,11 @@ int main(int argc, char **argv)
 {
     int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE);
     char            *sername = DEFAULT_SERDEVICE,token;
-    char extra;
+    char extra,relay;
     char time_msg[10];
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
-  //  static char status_str[] = "S1111111111111";
     static char start_str[] =
         "************ REMOTE CONSOLE: CTRL-] TO QUIT ********\r\n";
     static char end_str[] =
@@ -178,10 +176,31 @@ int main(int argc, char **argv)
     {
     case 0:
         close(1); /* stdout not needed */
-        for (c=getchar(); c!= ENDMINITERM ; c=getchar()){// write(fd,&c,1);
+        for (c=getchar(); c!= ENDMINITERM ; c=getchar()){
+        	// write(fd,&c,1); no echo chars to modem
         	if(c==SHOW_SATUS_HEADER){
         		write(fd, status_str, strlen(status_str));
         	}
+            if(c==RELAY_HEADER){
+            	token = (char)RELAY_HEADER;
+            	extra = (char)RELAY_ON;
+            	relay = '1';
+            	write(fd,&token,1);
+            	write(fd,&extra,1);
+            	write(fd,&relay, 1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+            	write(fd,&extra,1);
+                continue;
+            }
         }
         tcsetattr(fd,TCSANOW,&oldsertio);
         tcsetattr(0,TCSANOW,&oldstdtio);
@@ -206,6 +225,8 @@ int main(int argc, char **argv)
         {
             read(fd,&c,1); /* modem */
             c = (char)c;
+
+            //sync time request
             if(c==TIME_REQUEST){
             	token = (char)TIME_HEADER;
             	extra = (char)COMPLETE_CHAR;
@@ -226,7 +247,7 @@ int main(int argc, char **argv)
     return 0;
 
  usage:
-    printf("miniterm [-b<baudrate>] [-d<devicename>]\n");
+    printf("controlregleta [-b<baudrate>] [-d<devicename>]\n");
     printf("Default baud rate: %d\n", DEFAULT_BAUDRATE);
     printf("Default device: %s\n", DEFAULT_SERDEVICE);
     return 1;
