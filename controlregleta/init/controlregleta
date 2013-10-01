@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# Copyright (c) 2013 Angel Lanza
+# All rights reserved.
+#
+# Author: Angel Lanza, 2013
+#
+# /etc/init.d/controlregleta
+#   and its symbolic link
+# /usr/sbin/controlregleta
+
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Iniciando control regleta "
+    tmux new-session  -n controlregleta -s controlregleta "controlregleta -b57600 -d/dev/ttyUSB0"\; detach
+    ;;
+  stop)
+    echo "Parando control regleta"
+    tmux kill-session -t controlregleta
+    ;;
+  *)
+        ## If no parameters are given, print which are avaiable.
+        echo "Usage: $0 {start|stop}"
+        exit 1
+    ;;
+esac
+
+exit 0
