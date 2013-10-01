@@ -17,6 +17,7 @@
 *Status SXXXXXXXXXXXXXX
 *Rele R[E,A][1-4]XXXXXXXXXXX
 *Sync horas T
+*Programar P[1-4]HHMMSSHHMMSS (inicio-fin)
 *Responde a caracter BELL para sync hora
 */
 
@@ -92,10 +93,11 @@ int cook_baud(int baud)
 
 int main(int argc, char **argv)
 {
-    int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE);
+    int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE),i=0;
     char            *sername = DEFAULT_SERDEVICE,token;
     char extra,relay,mode;
     char time_msg[10];
+    char prog_time[] = "000000000000";
     time_t sec;
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
     struct sigaction sa;
@@ -105,7 +107,7 @@ int main(int argc, char **argv)
     static char end_str[] =
         "\n************ SALIR DE CONSOLA *****************\n";
     static char help_str[] =
-        "Comandos: S (status) R[E,A][1-4] (reles) T (sync time)\r\n";
+        "Comandos:\r\n S (status)\r\n R[E,A][1-4](reles)\r\n T (sync time)\r\n P[1-4]HHMMSSHHMMSS (programar)\r\n";
 
     while ( --argc != 0 )
     {
@@ -227,6 +229,19 @@ int main(int argc, char **argv)
 						write(fd,&extra,1);
 					 }
 					}
+            }
+            if(c==PROG_HEADER){
+            	token= (char)PROG_HEADER;
+            	relay=getchar();
+            	for(i=0;i<=strlen(prog_time)-1;i++){
+            		prog_time[i]=getchar();
+            	}
+					if(relay==RELAY_1 || relay==RELAY_2 || relay==RELAY_3 || relay==RELAY_4 ){
+						write(fd,&token,1);
+						write(fd,&relay,1);
+						write(fd,prog_time,strlen(prog_time));
+					 }
+
             }
         }
         tcsetattr(fd,TCSANOW,&oldsertio);
