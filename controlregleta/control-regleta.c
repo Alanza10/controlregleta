@@ -279,7 +279,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	for(i=0;i<=1000;i++); //little delay
-            	system ("sh /home/gelo/git/controlregleta/controlregleta/commands/regletabackup.sh");
+            	system ("sh /home/pi/cs/controlregleta/commands/regletabackup.sh");
                 continue;
             }
             write(1,&c,1); /* stdout */
