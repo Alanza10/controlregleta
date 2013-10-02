@@ -16,23 +16,41 @@ PROG4=000000000000
 eval `sed '/^ *#/d;s/=/ /;' < "$CONFIGFILE" |  
 while read key val
 do
-    str="$key='$val'"   
-     echo "$str"
+	if [ "$key" == "TTY"  ]; then 
+    	str="$key='$val'"
+    	echo "$str"
+	fi
+    if [ "$key" == "RELAY1"  ]; then 
+    	str="$key='$val'"
+    	echo "$str"
+    fi
+	if [ "$key" == "RELAY2"  ]; then 
+    	str="$key='$val'"
+    	echo "$str"
+	fi
+	if [ "$key" == "RELAY3"  ]; then 
+    	str="$key='$val'"
+    	echo "$str"
+	fi	
+	if [ "$key" == "RELAY4"  ]; then 
+    	str="$key='$val'"
+    	echo "$str"
+	fi	
 done`
 
-if [ "$RELAY1" -eq 1  ]; then 
+if [ "$RELAY1" ==  "1"  ]; then 
 	sh /home/pi/cs/controlregleta/commands/programar.sh $TTY $RELAY1 $PROG1
 fi
 
-if [ "$RELAY2" -eq 2  ]; then 
+if [ "$RELAY2" ==  "2"  ]; then 
 	sh /home/pi/cs/controlregleta/commands/programar.sh $TTY $RELAY2 $PROG2
 fi
 
-if [ "$RELAY3" -eq 3  ]; then 
+if [ "$RELAY3" ==  "3"  ]; then 
 	sh /home/pi/cs/controlregleta/commands/programar.sh $TTY $RELAY4 $PROG2
 fi
 
-if [ "$RELAY4" -eq 4  ]; then 
+if [ "$RELAY4" ==  "4"  ]; then 
 	sh /home/pi/cs/controlregleta/commands/programar.sh $TTY $RELAY4 $PROG4
 fi
 	
