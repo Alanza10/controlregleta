@@ -152,6 +152,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
+            	progresend();
                 continue;
             }
             if(c==RELAY_HEADER){
@@ -226,7 +227,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-
+            	//progresend();
             	continue;
             }
             write(1,&c,1); /* stdout */
