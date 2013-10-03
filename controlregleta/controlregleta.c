@@ -298,6 +298,7 @@ void progresend(){
 	      perror ("fork");
 	      break;
 	    case 0:
+	      close(1);
 	      // This is processed by the child
 	      execv("/usr/sbin/regletacomander", my_args);
 	      exit(0);
