@@ -287,22 +287,7 @@ void progresend(){
 	  my_args[2] = "-d/dev/ttyAMA0";
 	  my_args[3] = "-s";
 	  my_args[4] = NULL;
-
-
-
-	  switch ((pid = fork()))
-	  {
-	    case -1:
-	      //Fork() has failed
-	      perror ("fork");
-	      break;
-	    case 0:
 	      // This is processed by the child
-	      execv ("/usr/sbin/regletacomander", my_args);
-	      exit(EXIT_FAILURE);
-	      break;
-	    default:
-	      // This is processed by the parent
-	      break;
-	  }
+	   execv ("/usr/sbin/regletacomander", my_args);
+
 }
