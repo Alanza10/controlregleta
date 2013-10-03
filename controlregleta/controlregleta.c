@@ -302,6 +302,7 @@ void progresend(){
 	      exit(0);
 	      break;
 	    default:
+	      wait(NULL); /* wait for child to die or it will become a zombie */
 	      // This is processed by the parent
 	      break;
 	  }
