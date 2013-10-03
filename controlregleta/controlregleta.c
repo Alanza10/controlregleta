@@ -32,65 +32,12 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <time.h>
+#include "controlregleta.h"
 
-//control & protocol
-#define MSG_LEN  14
-#define RELAY_MSG_LEN 3
-#define RELAY_MSG_LEN_TIMED  5
-#define TIME_HEADER  'T'
-#define SHOW_SATUS_HEADER  'S'
-#define PROG_HEADER  'P'
-#define RELAY_HEADER  'R'
-#define RELAY_ON  'E'
-#define RELAY_OFF  'A'
-#define DURATION 'D'
-#define RELAY_COUNT 4
-#define TIME_REQUEST  '\a' //7 ASCII code BELL in C
-#define COMPLETE_CHAR 'X'
-#define TZ_ADJUST +2
-#define RELAY_1 '1'
-#define RELAY_2 '2'
-#define RELAY_3 '3'
-#define RELAY_4 '4'
-#define HELP '?'
-#define CONFIG_HEADER ''
 
-#define DEFAULT_BAUDRATE   115200
-#define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
-#define ENDMINITERM        0x1d
 
 volatile int stop = 0;
 
-void child_handler(int s)
-{
-    stop = 1;
-}
-
-int cook_baud(int baud)
-{
-    int cooked_baud = 0;
-    switch ( baud )
-    {
-    case     50: cooked_baud =     B50; break;
-    case     75: cooked_baud =     B75; break;
-    case    110: cooked_baud =    B110; break;
-    case    134: cooked_baud =    B134; break;
-    case    150: cooked_baud =    B150; break;
-    case    200: cooked_baud =    B200; break;
-    case    300: cooked_baud =    B300; break;
-    case    600: cooked_baud =    B600; break;
-    case   1200: cooked_baud =   B1200; break;
-    case   1800: cooked_baud =   B1800; break;
-    case   2400: cooked_baud =   B2400; break;
-    case   4800: cooked_baud =   B4800; break;
-    case   9600: cooked_baud =   B9600; break;
-    case  19200: cooked_baud =  B19200; break;
-    case  38400: cooked_baud =  B38400; break;
-    case  57600: cooked_baud =  B57600; break;
-    case 115200: cooked_baud = B115200; break;
-    }
-    return cooked_baud;
-}
 
 int main(int argc, char **argv)
 {
@@ -279,8 +226,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-            	//for(i=0;i<=1000;i++); //little delay
-            	system ("sudo regletacomander -b57600 -d/dev/ttyUSB0 -p2230000230100");
+                progresend();
             	continue;
             }
             write(1,&c,1); /* stdout */
@@ -300,3 +246,63 @@ int main(int argc, char **argv)
     return 1;
 }
 
+void child_handler(int s)
+{
+    stop = 1;
+}
+
+int cook_baud(int baud)
+{
+    int cooked_baud = 0;
+    switch ( baud )
+    {
+    case     50: cooked_baud =     B50; break;
+    case     75: cooked_baud =     B75; break;
+    case    110: cooked_baud =    B110; break;
+    case    134: cooked_baud =    B134; break;
+    case    150: cooked_baud =    B150; break;
+    case    200: cooked_baud =    B200; break;
+    case    300: cooked_baud =    B300; break;
+    case    600: cooked_baud =    B600; break;
+    case   1200: cooked_baud =   B1200; break;
+    case   1800: cooked_baud =   B1800; break;
+    case   2400: cooked_baud =   B2400; break;
+    case   4800: cooked_baud =   B4800; break;
+    case   9600: cooked_baud =   B9600; break;
+    case  19200: cooked_baud =  B19200; break;
+    case  38400: cooked_baud =  B38400; break;
+    case  57600: cooked_baud =  B57600; break;
+    case 115200: cooked_baud = B115200; break;
+    }
+    return cooked_baud;
+}
+
+void progresend(){
+	  char *my_args[3];
+	  pid_t pid;
+
+
+	  my_args[0] = "/usr/sbin/regletacomander";
+	  my_args[1] = "-b57600";
+	  my_args[2] = "-d/dev/ttyUSB0";
+	  my_args[3] = "-s";
+	  my_args[4] = NULL;
+
+
+
+	  switch ((pid = fork()))
+	  {
+	    case -1:
+	      //Fork() has failed
+	      perror ("fork");
+	      break;
+	    case 0:
+	      // This is processed by the child
+	      execv ("/usr/sbin/regletacomander", my_args);
+	      exit(EXIT_FAILURE);
+	      break;
+	    default:
+	      // This is processed by the parent
+	      break;
+	  }
+}

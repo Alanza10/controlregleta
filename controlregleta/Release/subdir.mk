@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../control-regleta.c 
+../controlregleta.c 
 
 OBJS += \
-./control-regleta.o 
+./controlregleta.o 
 
 C_DEPS += \
-./control-regleta.d 
+./controlregleta.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
