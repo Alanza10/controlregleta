@@ -6,3 +6,4 @@ if [ $# = 2 ]; then
 fi                                                               
   echo usage: $0 tty rele                                                            
 
+
