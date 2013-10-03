@@ -279,7 +279,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	for(i=0;i<=1000;i++); //little delay
-            	//system ("regletacomander -b57600 -d/dev/ttyUSB0 -tRE1");
+            	system ("regletacomander -b57600 -d/dev/ttyUSB0 -p2230000230100");
                 continue;
             }
             write(1,&c,1); /* stdout */
@@ -289,9 +289,7 @@ int main(int argc, char **argv)
         break;
     }
 
-    close(0);
-    close(1);
-    close(fd);
+
     return 0;
 
  usage:
