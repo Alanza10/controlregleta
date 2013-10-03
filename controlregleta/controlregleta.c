@@ -299,7 +299,7 @@ void progresend(){
 	    case 0:
 	      // This is processed by the child
 	      execv("/usr/sbin/regletacomander", my_args);
-	      exit(EXIT_FAILURE);
+	      exit(0);
 	      break;
 	    default:
 	      // This is processed by the parent
