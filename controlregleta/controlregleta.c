@@ -284,7 +284,7 @@ void progresend(){
 
 	  my_args[0] = "/usr/sbin/regletacomander";
 	  my_args[1] = "-b57600";
-	  my_args[2] = "-d/dev/ttyUSB0";
+	  my_args[2] = "-d/dev/ttyAMA0";
 	  my_args[3] = "-s";
 	  my_args[4] = NULL;
 
