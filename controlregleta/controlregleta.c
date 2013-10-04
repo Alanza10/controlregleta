@@ -337,15 +337,6 @@ int cook_baud(int baud)
     return cooked_baud;
 }
 
-void progresend(int fd){
-    /*search for config file*/
-    struct config configstruct = get_config(CONFIG_FILE);
- //   int i, r;
-    char token;
-    char relay;
-    char *prog_time;
-
-}
 
 struct config get_config(char *filename)
  {
