@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     char prog_time[] = "000000000000";
     time_t sec;
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
-//    struct config configstruct = get_config(CONFIG_FILE);
+    struct config configstruct = get_config(CONFIG_FILE);
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
     static char start_str[] =
