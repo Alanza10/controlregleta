@@ -246,6 +246,10 @@ int main(int argc, char **argv)
             	relays[2]=buffer[0];
             	strcpy( buffer, configstruct.relay4 );
             	relays[3]=buffer[0];
+            	printf("%s\n",configstruct.prog1 );
+            	printf("%s\n",configstruct.prog2 );
+            	printf("%s\n",configstruct.prog1 );
+            	printf("%s\n",configstruct.prog2 );
             	for(i=0;i<4;i++){
                    	switch((char)relays[i]){
                     		case '1':
