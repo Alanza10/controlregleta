@@ -221,7 +221,7 @@ int main(int argc, char **argv)
             read(fd,&c,1); /* modem */
             c = (char)c;
 
-            /*
+
             //sync time request
            if(c==TIME_REQUEST){
                 sec = time(NULL);
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	continue;
-           }*/
+           }
            if(c==CONFIG_HEADER){
             	//for(i=0;i<1000;i++);//delay
                 char buffer[1],relays[4];
