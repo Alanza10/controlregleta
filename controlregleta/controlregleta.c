@@ -41,7 +41,7 @@ volatile int stop = 0;
 
 int main(int argc, char **argv)
 {
-    int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE),i=0;
+    int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE),i=0,j=0;
     int baudaux;
     char            *sername = DEFAULT_SERDEVICE,token;
     char extra,relay,mode;
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
             	strcpy( buffer, configstruct.relay4 );
             	relays[3]=buffer[0];
             	for(i=0;i<4;i++){
-            		for(i=0;i<1000;i++);//delay
+            		for(j=0;i<1000;i++);//delay
                    	switch((char)relays[i]){
                     		case '1':
                             	token= (char)PROG_HEADER;
