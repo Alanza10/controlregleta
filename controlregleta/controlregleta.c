@@ -235,7 +235,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	continue;
             }
-/*
+
             //prog resend
             if(c==CONFIG_HEADER){
                 char buffer[1],relays[4];
@@ -288,7 +288,7 @@ int main(int argc, char **argv)
             	}
 
             	continue;
-            }*/
+            }
 
             write(1,&c,1); /* stdout */
         }
