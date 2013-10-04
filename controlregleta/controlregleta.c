@@ -248,9 +248,6 @@ int main(int argc, char **argv)
             	strcpy( buffer, configstruct.relay4 );
             	relays[3]=buffer[0];
 
-
-
-
             	for(i=0;i<4;i++){
             		   int c = 1, d = 1;
 
