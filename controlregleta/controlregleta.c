@@ -252,6 +252,7 @@ int main(int argc, char **argv)
 
             	for(i=0;i<4;i++){
                    	switch((char)relays[i]){
+                   	       delay(1000);
                     		case '1':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_1;
@@ -279,7 +280,6 @@ int main(int argc, char **argv)
                         		write(fd,&relay,1);
                         		write(fd,prog_time,strlen(prog_time));
                     			break;
-                    			/*
                     		case '4':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_4;
@@ -288,9 +288,9 @@ int main(int argc, char **argv)
                         		write(fd,&token,1);
                         		write(fd,&relay,1);
                         		write(fd,prog_time,strlen(prog_time));
-                    			break;*/
+                    			break;
                     		default:
-                    			printf("fallo");
+                    			printf("fallo config");
                     			break;
                     	}
 
