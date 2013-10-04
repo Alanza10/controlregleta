@@ -233,7 +233,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-
+            	//for(i=0;i<1000;i++);//delay
                 char buffer[1],relays[4];
             	strcpy( buffer, configstruct.relay1 );
             	relays[0]=buffer[0];
@@ -244,6 +244,7 @@ int main(int argc, char **argv)
             	strcpy( buffer, configstruct.relay4 );
             	relays[3]=buffer[0];
             	for(i=0;i<4;i++){
+            		for(i=0;i<1000;i++);//delay
                    	switch((char)relays[i]){
                     		case '1':
                             	token= (char)PROG_HEADER;
