@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     char prog_time[] = "000000000000";
     time_t sec;
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
-    struct config configstruct = get_config(CONFIG_FILE);
+//    struct config configstruct = get_config(CONFIG_FILE);
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
     static char start_str[] =
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
         {
             read(fd,&c,1); /* modem */
             c = (char)c;
- /*
+
             //sync time request
            if(c==TIME_REQUEST){
                 sec = time(NULL);
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	continue;
             }
-
+/*
             //prog resend
             if(c==CONFIG_HEADER){
                 char buffer[1],relays[4];
