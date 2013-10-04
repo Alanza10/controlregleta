@@ -262,7 +262,6 @@ int main(int argc, char **argv)
                     		case '1':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_1;
-                            	printf("caso1 %s\n",configstruct.prog1 );
                             	strcpy( prog_time, configstruct.prog1 );
                         		write(fd,&token,1);
                         		write(fd,&relay,1);
@@ -271,7 +270,6 @@ int main(int argc, char **argv)
                     		case '2':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_2;
-                              	printf("caso2 %s\n",configstruct.prog2 );
                             	strcpy( prog_time, configstruct.prog2 );
                         		write(fd,&token,1);
                         		write(fd,&relay,1);
@@ -280,7 +278,6 @@ int main(int argc, char **argv)
                     		case '3':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_3;
-                            	printf("caso3 %s\n",configstruct.prog3 );
                             	strcpy( prog_time, configstruct.prog3 );
                         		write(fd,&token,1);
                         		write(fd,&relay,1);
@@ -289,7 +286,6 @@ int main(int argc, char **argv)
                     		case '4':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_4;
-                            	printf("caso4 %s\n",configstruct.prog4);
                             	strcpy( prog_time, configstruct.prog4 );
                         		write(fd,&token,1);
                         		write(fd,&relay,1);
