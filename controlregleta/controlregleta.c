@@ -289,6 +289,7 @@ int main(int argc, char **argv)
                         		write(fd,prog_time,strlen(prog_time));
                     			break;
                     		default:
+                    			printf("fallo");
                     			break;
                     	}
 
