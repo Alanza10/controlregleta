@@ -233,11 +233,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-            	continue;
-            }
 
-            //prog resend
-            if(c==CONFIG_HEADER){
                 char buffer[1],relays[4];
             	strcpy( buffer, configstruct.relay1 );
             	relays[0]=buffer[0];
