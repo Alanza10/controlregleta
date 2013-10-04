@@ -251,7 +251,11 @@ int main(int argc, char **argv)
 
 
             	for(i=0;i<4;i++){
-            		delay(1000);
+            		   int c = 1, d = 1;
+
+            		   for ( c = 1 ; c <= 32767 ; c++ )
+            		       for ( d = 1 ; d <= 32767 ; d++ )
+            		       {}
                    	switch((char)relays[i]){
 
                     		case '1':
