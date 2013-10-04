@@ -42,12 +42,14 @@ volatile int stop = 0;
 int main(int argc, char **argv)
 {
     int              fd, c, cooked_baud = cook_baud(DEFAULT_BAUDRATE),i=0;
+    int baudaux;
     char            *sername = DEFAULT_SERDEVICE,token;
     char extra,relay,mode;
     char time_msg[10];
     char prog_time[] = "000000000000";
     time_t sec;
     struct termios   oldsertio, newsertio, oldstdtio, newstdtio;
+    struct config configstruct = get_config(CONFIG_FILE);
     struct sigaction sa;
     static char status_str[] = "S1111111111111";
     static char start_str[] =
@@ -130,7 +132,9 @@ int main(int argc, char **argv)
     switch ( fork() )
     {
     case 0:
+    	 //printf("Hilo (%d, hijo de %d)\n", getpid(), getppid());
         //close(1); /* stdout not needed */
+    	//printf("Soy el primer hijo (%d, hijo de %d)\n", getpid(), getppid());
         for (c=getchar(); c!= ENDMINITERM ; c=getchar()){
         	// write(fd,&c,1); no echo chars to modem
         	if(c==SHOW_SATUS_HEADER){
@@ -152,7 +156,7 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-            	progresend();
+
                 continue;
             }
             if(c==RELAY_HEADER){
@@ -179,6 +183,7 @@ int main(int argc, char **argv)
 					 }
 					}
             }
+
             if(c==PROG_HEADER){
             	token= (char)PROG_HEADER;
             	relay=getchar();
@@ -204,6 +209,7 @@ int main(int argc, char **argv)
         close(fd);
         exit(-1);
     default:
+		//printf("Hilo Padre2 %d\n", getppid());
         write(1, start_str, strlen(start_str));
         close(0); /* stdin not needed */
         sa.sa_handler = child_handler;
@@ -215,8 +221,9 @@ int main(int argc, char **argv)
             read(fd,&c,1); /* modem */
             c = (char)c;
 
+
             //sync time request
-            if(c==TIME_REQUEST){
+           if(c==TIME_REQUEST){
                 sec = time(NULL);
                 sec= sec + (60*60*TZ_ADJUST);
                 (void)sprintf(time_msg,"%ld",sec);
@@ -227,9 +234,63 @@ int main(int argc, char **argv)
             	write(fd,&extra,1);
             	write(fd,&extra,1);
             	write(fd,&extra,1);
-            	//progresend();
             	continue;
             }
+
+            //prog resend
+            if(c==CONFIG_HEADER){
+                char buffer[1],relays[4];
+            	strcpy( buffer, configstruct.relay1 );
+            	relays[0]=buffer[0];
+            	strcpy( buffer, configstruct.relay2 );
+            	relays[1]=buffer[0];
+            	strcpy( buffer, configstruct.relay3 );
+            	relays[2]=buffer[0];
+            	strcpy( buffer, configstruct.relay4 );
+            	relays[3]=buffer[0];
+            	for(i=0;i<4;i++){
+                   	switch((char)relays[i]){
+                    		case '1':
+                            	token= (char)PROG_HEADER;
+                            	relay=(char)RELAY_1;
+                            	strcpy( prog_time, configstruct.prog1 );
+                        		write(fd,&token,1);
+                        		write(fd,&relay,1);
+                        		write(fd,prog_time,strlen(prog_time));
+                    			break;
+                    		case '2':
+                            	token= (char)PROG_HEADER;
+                            	relay=(char)RELAY_1;
+                            	strcpy( prog_time, configstruct.prog2 );
+                        		write(fd,&token,1);
+                        		write(fd,&relay,1);
+                        		write(fd,prog_time,strlen(prog_time));
+                    			break;
+                    		case '3':
+                            	token= (char)PROG_HEADER;
+                            	relay=(char)RELAY_1;
+                            	strcpy( prog_time, configstruct.prog3 );
+                        		write(fd,&token,1);
+                        		write(fd,&relay,1);
+                        		write(fd,prog_time,strlen(prog_time));
+                    			break;
+                    		case '4':
+                            	token= (char)PROG_HEADER;
+                            	relay=(char)RELAY_1;
+                            	strcpy( prog_time, configstruct.prog4 );
+                        		write(fd,&token,1);
+                        		write(fd,&relay,1);
+                        		write(fd,prog_time,strlen(prog_time));
+                    			break;
+                    		default:
+                    			break;
+                    	}
+
+            	}
+
+            	continue;
+            }
+
             write(1,&c,1); /* stdout */
         }
         wait(NULL); /* wait for child to die or it will become a zombie */
@@ -278,35 +339,65 @@ int cook_baud(int baud)
     return cooked_baud;
 }
 
-void progresend(){
-	  char *my_args[3];
-	  pid_t pid;
+void progresend(int fd){
+    /*search for config file*/
+    struct config configstruct = get_config(CONFIG_FILE);
+ //   int i, r;
+    char token;
+    char relay;
+    char *prog_time;
 
-
-	  my_args[0] = "/usr/sbin/regletacomander";
-	  my_args[1] = "-b57600";
-	  my_args[2] = "-d/dev/ttyAMA0";
-	  my_args[3] = "-p1112233112244";
-	  my_args[4] = NULL;
-
-
-
-	  switch ((pid = fork()))
-	  {
-	    case -1:
-	      //Fork() has failed
-	      perror ("fork");
-	      break;
-	    case 0:
-	      close(1);
-	      close(0);
-	      // This is processed by the child
-	      execv("/usr/sbin/regletacomander", my_args);
-	      exit(0);
-	      break;
-	    default:
-	      wait(NULL); /* wait for child to die or it will become a zombie */
-	      // This is processed by the parent
-	      break;
-	  }
 }
+
+struct config get_config(char *filename)
+ {
+         struct config configstruct;
+         FILE *file = fopen (filename, "r");
+
+         if (file != NULL)
+         {
+                 char line[MAXBUF];
+                 int i = 0;
+
+                 while(fgets(line, sizeof(line), file) != NULL)
+                 {
+                         char *cfline;
+                         cfline = strstr((char *)line,DELIM);
+                         cfline = cfline + strlen(DELIM);
+
+                        if (i == 0){
+                                 memcpy(configstruct.relay1,cfline,strlen(cfline));
+                                 //printf("%s",configstruct.port);
+                         } else if (i == 1){
+                                 memcpy(configstruct.prog1,cfline,strlen(cfline));
+                                 //printf("%s",configstruct.imagename);
+                         } else if (i == 2){
+                                 memcpy(configstruct.relay2,cfline,strlen(cfline));
+                                 //printf("%s",configstruct.getcmd);
+                         } else if (i == 3){
+                             memcpy(configstruct.prog2,cfline,strlen(cfline));
+                             //printf("%s",configstruct.imagename);
+						 } else if (i == 4){
+								 memcpy(configstruct.relay3,cfline,strlen(cfline));
+								 //printf("%s",configstruct.getcmd);
+						 } else if (i == 5){
+							 memcpy(configstruct.prog3,cfline,strlen(cfline));
+							 //printf("%s",configstruct.imagename);
+						 } else if (i == 6){
+							 memcpy(configstruct.relay4,cfline,strlen(cfline));
+							 //printf("%s",configstruct.getcmd);
+						 } else if (i == 7){
+							 memcpy(configstruct.prog4,cfline,strlen(cfline));
+							 //printf("%s",configstruct.imagename);
+						 }
+
+                         i++;
+                 } // End while
+         } // End if file
+
+
+         fclose(file);
+
+         return configstruct;
+
+ }

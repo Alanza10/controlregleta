@@ -15,6 +15,7 @@
 #define TIME_HEADER  'T'
 #define SHOW_SATUS_HEADER  'S'
 #define PROG_HEADER  'P'
+#define CONFIG_HEADER 0x1e
 #define RELAY_HEADER  'R'
 #define RELAY_ON  'E'
 #define RELAY_OFF  'A'
@@ -28,7 +29,9 @@
 #define RELAY_3 '3'
 #define RELAY_4 '4'
 #define HELP '?'
-#define CONFIG_HEADER ''
+#define CONFIG_FILE "/etc/controlregleta.cfg"
+#define MAXBUF 1024
+#define DELIM "="
 
 #define DEFAULT_BAUDRATE   115200
 #define DEFAULT_SERDEVICE  "/dev/ttyAMA0"
@@ -36,6 +39,19 @@
 
 void child_handler(int s);
 int cook_baud(int baud);
-void progresend();
+void progresend(int fd);
+struct config get_config(char *filename);
+
+struct config
+{
+   char relay1[MAXBUF];
+   char prog1[MAXBUF];
+   char relay2[MAXBUF];
+   char prog2[MAXBUF];
+   char relay3[MAXBUF];
+   char prog3[MAXBUF];
+   char relay4[MAXBUF];
+   char prog4[MAXBUF];
+};
 
 #endif /* CONTROLREGLETA_H_ */
