@@ -251,8 +251,9 @@ int main(int argc, char **argv)
 
 
             	for(i=0;i<4;i++){
+            		delay(1000);
                    	switch((char)relays[i]){
-                   	       delay(1000);
+
                     		case '1':
                             	token= (char)PROG_HEADER;
                             	relay=(char)RELAY_1;
