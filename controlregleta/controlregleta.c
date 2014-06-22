@@ -115,6 +115,9 @@ struct config get_config(char *filename)
                          i++;
                  } // End while
          } // End if file
+         else{
+        	 printf("Missing config file: %s\n", filename);
+         }
 
 
          fclose(file);
